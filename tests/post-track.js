@@ -10,7 +10,7 @@ describe('POST /track ', function () {
     it('should be 200', function (done) {
         server
           .post('/track')
-          .send({ count: '1', other: 'cat' })
+//          .send({ count: '1', other: 'cat' })
           .expect(200)
           .expect('Content-Type', /text\/plain/)
           .end(function (err, res) {

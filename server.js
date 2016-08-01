@@ -14,7 +14,7 @@ function parsePostData() {
     var instance = this;
     var promise = new Promise(function (fullfill, reject) {
         var queryData = "";
-        
+
         // on receive data
         instance.on('data', function (data) {
             queryData += data;
@@ -48,7 +48,7 @@ http.createServer(function (request, response) {
         response.end('' + error);
     }
     console.log(request.url, request.method);
-    
+
     // resolve url /count method get
     if (request.url === '/count' && request.method === 'GET') {
         controller.get().then(function (count) {
@@ -57,9 +57,9 @@ http.createServer(function (request, response) {
             response.end('' + count);
         }).catch(sendError);
     }
-    
+
     // resolve url /track method post
-    if (request.url === '/track' && request.method === 'POST') {
+    else if (request.url === '/track' && request.method === 'POST') {
         // gain object from postdata for next process
         request.parsePostData().then(function (data) {
             return controller.post(data);
@@ -70,6 +70,11 @@ http.createServer(function (request, response) {
               response.writeHead(200, {"Content-Type": "text/plain"});
               response.end();
           }).catch(sendError);
+    } 
+    // resolve the rest of requests
+    else {
+        response.writeHead(404, {"Content-Type": "text/plain"});
+        response.end();
     }
 
 }).listen(8888);

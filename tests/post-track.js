@@ -6,18 +6,20 @@ var expect = chai.expect;
 
 var server = request.agent("http://localhost:8888");
 
-describe('', function () {
-    it('GET / should be 404', function (done) {
+describe('POST /track ', function () {
+    it('should be 200', function (done) {
         server
-          .get('')
-          .expect(404)
+          .post('/track')
+          .send({ count: '1', other: 'cat' })
+          .expect(200)
           .expect('Content-Type', /text\/plain/)
           .end(function (err, res) {
               if (err) {
                   done(err);
               }
-              expect(res.text).to.be.empty;
               done();
           });
     });
+    
+
 });

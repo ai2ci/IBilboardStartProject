@@ -28,7 +28,6 @@ function parsePostData() {
         instance.on('end', function () {
             // parse query to object
             instance._postDataObject = querystring.parse(queryData);
-
             fullfill(instance._postDataObject);
         });
         instance.on('error', function (error) {

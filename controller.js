@@ -2,8 +2,8 @@
 
 var Promise = require('promise');
 
-var fileIo = require("./file-io.js");
-var dbIo = require("./db-io.js");
+var fileIo = require("./file.js");
+var dbIo = require("./db.js");
 
 function get() {
     var promise = new Promise(function (fullfill, fail) {

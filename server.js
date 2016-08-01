@@ -10,50 +10,62 @@ var controller = require('./controller.js');
 
 
 // copied from http://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
-function processPost() {
+function parsePostData() {
     var instance = this;
     var promise = new Promise(function (fullfill, reject) {
         var queryData = "";
+        
+        // on receive data
         instance.on('data', function (data) {
-
             queryData += data;
+            //
             if (queryData.length > 1e6) {
                 queryData = "";
                 reject('Memory overflow')
             }
         });
+        // on end of receiving parse whole string
         instance.on('end', function () {
-            instance.postDataObject = querystring.parse(queryData);
+            // parse query to object
+            instance._postDataObject = querystring.parse(queryData);
 
-            fullfill(instance.postDataObject);
+            fullfill(instance._postDataObject);
+        });
+        instance.on('error', function (error) {
+            reject(error);
         });
     });
     return promise;
 }
 
-http.IncomingMessage.prototype.processPost = processPost;
+http.IncomingMessage.prototype.parsePostData = parsePostData;
 
 http.createServer(function (request, response) {
+    // function colled on error
     var sendError = function (error) {
         console.log(error, 'err');
         response.writeHead(500);
         response.end('' + error);
     }
     console.log(request.url, request.method);
+    
     // resolve url /count method get
     if (request.url === '/count' && request.method === 'GET') {
         controller.get().then(function (count) {
+            // send succes and count
             response.writeHead(200, {"Content-Type": "text/plain"});
             response.end('' + count);
         }).catch(sendError);
     }
+    
     // resolve url /track method post
     if (request.url === '/track' && request.method === 'POST') {
         // gain object from postdata for next process
-        request.processPost().then(function (data) {
-            return controller.post(data)
+        request.parsePostData().then(function (data) {
+            return controller.post(data);
         }).catch(sendError)
           .then(function () {
+              // send succes
               console.log('send success');
               response.writeHead(200, {"Content-Type": "text/plain"});
               response.end();

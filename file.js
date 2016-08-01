@@ -9,7 +9,7 @@ var path = "data/post.log";
  */
 function addToFile(data) {
     
-    var promise = new Promise(function (fullfill, reject) {
+    var promise = new Promise(function (fulfill, reject) {
 
         var newNote = '';
         var exists = fs.existsSync(path);
@@ -26,7 +26,7 @@ function addToFile(data) {
             if (err) {
                 return reject(err);
             }
-            return fullfill(res);
+            return fulfill(res);
         });
 
     });

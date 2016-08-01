@@ -6,25 +6,25 @@ var fileIo = require("./file.js");
 var dbIo = require("./db.js");
 
 function get() {
-    var promise = new Promise(function (fullfill, fail) {
+    var promise = new Promise(function (fulfill, fail) {
         dbIo.getCount().then(function (count) {
             console.log('c', count);
-            fullfill(count);
+            fulfill(count);
         }).catch(fail);
     });
     return promise;
 }
 function post(data) {
-    var promise = new Promise(function (fullfill, fail) {
+    var promise = new Promise(function (fulfill, fail) {
         fileIo.addToFile(data).then(function () {
             // success
             if (data.count) {
                 // increment cout in db
                 dbIo.incrementCount(data.count)
-                  .then(fullfill)
+                  .then(fulfill)
                   .catch(fail);
             } else {
-                fullfill();
+                fulfill();
             }
         }, fail);
     });

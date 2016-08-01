@@ -12,7 +12,7 @@ var controller = require('./controller.js');
 // copied from http://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
 function parsePostData() {
     var instance = this;
-    var promise = new Promise(function (fullfill, reject) {
+    var promise = new Promise(function (fulfill, reject) {
         var queryData = "";
 
         // on receive data
@@ -28,7 +28,7 @@ function parsePostData() {
         instance.on('end', function () {
             // parse query to object
             instance._postDataObject = querystring.parse(queryData);
-            fullfill(instance._postDataObject);
+            fulfill(instance._postDataObject);
         });
         instance.on('error', function (error) {
             reject(error);

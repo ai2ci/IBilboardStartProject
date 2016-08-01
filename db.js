@@ -11,7 +11,7 @@ var keyName = 'count';
  */
 function incrementCount(data) {
 
-    var promise = new Promise(function (fullfill, reject) {
+    var promise = new Promise(function (fulfill, reject) {
 
 
         var client = redis.createClient();
@@ -23,7 +23,7 @@ function incrementCount(data) {
                 value += Number(data);
                 client.set(keyName, value);
                 console.log(2,value)
-                fullfill(value);
+                fulfill(value);
             });
         });
         client.on('error', function (error) {
@@ -39,14 +39,14 @@ function incrementCount(data) {
  */
 function getCount() {
 
-    var promise = new Promise(function (fullfill, reject) {
+    var promise = new Promise(function (fulfill, reject) {
 
         var client = redis.createClient();
         client.on('connect', function () {
             console.log('connected');
             client.get(keyName, function (error, reply) {
                 var value = Number(reply) || 0;
-                fullfill(value);
+                fulfill(value);
             });
         });
         client.on('error', function (error) {

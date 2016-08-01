@@ -22,11 +22,11 @@ function addToFile(data) {
         newNote += date.getTime() + ': ' + jsonString;
 
         // append new line
-        fs.appendFile(path, newNote, function (err, res) {
+        fs.appendFile(path, newNote, function (err) {
             if (err) {
                 return reject(err);
             }
-            return fulfill(res);
+            return fulfill();
         });
 
     });

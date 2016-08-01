@@ -1,15 +1,14 @@
+var chai = require("chai");
+chai.use(require("chai-as-promised"));
+var expect = chai.expect
 var controller = require('../controller.js');
 
 describe('controller', function () {
-    it('post', function (done) {
-        return controller.post({testVal: Date.now(), count: 1}).then(function(){
-            done();
-        })
+    it('post', function () {
+        return controller.post({testVal: Date.now(), count: 1})
     });
-    it('get', function (done) {
-        return controller.get().then(function(){
-            done();
-        })
+    it('get', function () {
+        return expect(controller.get()).to.eventually.be.an("Number");
     });
 
 });

@@ -26,6 +26,7 @@ function addToFile(data) {
             if (err) {
                 return reject(err);
             }
+            console.log(data)
             return fulfill();
         });
 

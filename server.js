@@ -1,7 +1,6 @@
 
 //var express = require("express");
 //var app = express();
-//var app = express();
 var http = require('http');
 var Promise = require('promise');
 var redis = require('redis');
@@ -25,7 +24,7 @@ function processPost() {
         });
         instance.on('end', function () {
             instance.postDataObject = querystring.parse(queryData);
-            
+
             fullfill(instance.postDataObject);
         });
     });
@@ -38,27 +37,27 @@ http.createServer(function (request, response) {
     var sendError = function (error) {
         console.log(error, 'err');
         response.writeHead(500);
-        response.end();
+        response.end('' + error);
     }
     console.log(request.url, request.method);
     // resolve url /count method get
     if (request.url === '/count' && request.method === 'GET') {
-        controller.get(function (count) {
+        controller.get().then(function (count) {
             response.writeHead(200, {"Content-Type": "text/plain"});
-            response.end(''+count);
-        }, sendError);
+            response.end('' + count);
+        }).catch(sendError);
     }
     // resolve url /track method post
     if (request.url === '/track' && request.method === 'POST') {
         // gain object from postdata for next process
-        request.processPost().done(function (data) {
-            controller.post(data, function () {
-                console.log('send success');
-                response.writeHead(200, {"Content-Type": "text/plain"});
-                response.end();
-            }, sendError)
-
-        }, sendError);
+        request.processPost().then(function (data) {
+            return controller.post(data)
+        }).catch(sendError)
+          .then(function () {
+              console.log('send success');
+              response.writeHead(200, {"Content-Type": "text/plain"});
+              response.end();
+          }).catch(sendError);
     }
 
 }).listen(8888);

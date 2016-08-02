@@ -26,12 +26,13 @@ function addToFile(data) {
         var date = new Date();
 
         newNote += jsonString;
-
-        // append new line
+        
+        // string has been created than can leave
         fulfill();
         busyUpdate = null;
         
         
+        // append new line out of of chain
         fs.appendFile(path, newNote, function (err) {
             if (err) {
                 return reject(err);

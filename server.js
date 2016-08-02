@@ -62,10 +62,9 @@ http.createServer(function (request, response) {
         // gain object from postdata for next process
         request.parsePostData().then(function (data) {
             return controller.post(data);
-        }).catch(sendError)
-          .then(function () {
+        }).then(function () {
               // send succes
-              console.log('send success');
+              console.log('send success', (request._postDataObject.c || ('count: '+ request._postDataObject.count)));
               response.writeHead(200, {"Content-Type": "text/plain"});
               response.end();
           }).catch(sendError);

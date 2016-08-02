@@ -28,7 +28,7 @@ describe('server', function () {
           .expect('Content-Type', /text\/plain/)
           .end(function (err, res) {
               if (err) {
-                  done(err);
+                  return done(err);
               }
               done();
           });

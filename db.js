@@ -5,6 +5,7 @@ var keyName = 'count';
 
 var busyUpdate = null;
 
+var client = null;
 
 /**
  * increment count
@@ -12,7 +13,7 @@ var busyUpdate = null;
  * @param Promise
  */
 function incrementCount(data) {
-    // if this function is performing it will necessary to chain self on current promise
+    // if this function is performing it will be necessary to link self on current promise
     if (busyUpdate !== null) {
         return new Promise(function (fulfill, reject) {
             return busyUpdate.then(function () {
@@ -23,21 +24,28 @@ function incrementCount(data) {
 
     busyUpdate = new Promise(function (fulfill, reject) {
 
-        var client = redis.createClient();
+
+        client = redis.createClient();
+
+        client.on('error', function (error) {
+            client = null;
+            reject(error);
+            busyUpdate = null;
+        });
+        //on connect get value and save new count
         client.on('connect', function () {
             client.get(keyName, function (error, reply) {
                 console.log('update', reply, data);
+
                 var value = Number(reply) || 0;
                 value += Number(data);
                 client.set(keyName, value);
+
                 fulfill(value);
                 busyUpdate = null;
+                client.quit();
 
             });
-        });
-        client.on('error', function (error) {
-            reject(error);
-            busyUpdate = null;
         });
     });
     return busyUpdate;
@@ -49,19 +57,24 @@ function incrementCount(data) {
 function getCount() {
     var promise = new Promise(function (fulfill, reject) {
 
-        var client = redis.createClient();
-        client.on('connect', function () {
-//            console.log('connected');
-            client.get(keyName, function (error, reply) {
-                var value = Number(reply) || 0;
-                fulfill(value);
-                busyUpdate = null;
-            });
-        });
+        client = redis.createClient();
+
         client.on('error', function (error) {
+            client = null;
             reject(error);
             busyUpdate = null;
         });
+        //on connect get value 
+        client.on('connect', function () {
+            client.get(keyName, function (error, reply) {
+                var value = Number(reply) || 0;
+
+                fulfill(value);
+                busyUpdate = null;
+                client.quit();
+
+            });
+        }); 
     });
     return promise;
 

@@ -16,7 +16,6 @@ function incrementCount(data) {
     if (busyUpdate !== null) {
         return new Promise(function (fulfill, reject) {
             return busyUpdate.then(function () {
-                busyUpdate = null;
                 incrementCount(data).then(fulfill).catch(reject);
             }).catch(reject);
         });
@@ -37,7 +36,8 @@ function incrementCount(data) {
             });
         });
         client.on('error', function (error) {
-            return reject(error);
+            reject(error);
+            busyUpdate = null;
         });
     });
     return busyUpdate;
@@ -47,8 +47,16 @@ function incrementCount(data) {
  * @returns Promise
  */
 function getCount() {
+    // if this function is processing it's necessary to chain self on current promise
+    if (busyUpdate !== null) {
+        return new Promise(function (fulfill, reject) {
+            return busyUpdate.then(function () {
+                getCount().then(fulfill).catch(reject);
+            }).catch(reject);
+        });
+    }
 
-    var promise = new Promise(function (fulfill, reject) {
+    busyUpdate = new Promise(function (fulfill, reject) {
 
         var client = redis.createClient();
         client.on('connect', function () {
@@ -56,13 +64,15 @@ function getCount() {
             client.get(keyName, function (error, reply) {
                 var value = Number(reply) || 0;
                 fulfill(value);
+                busyUpdate = null;
             });
         });
         client.on('error', function (error) {
-            return reject(error);
+            reject(error);
+            busyUpdate = null;
         });
     });
-    return promise;
+    return busyUpdate;
 
 }
 

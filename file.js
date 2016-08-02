@@ -10,26 +10,25 @@ var busyUpdate = null;
  */
 function addToFile(data) {
     // if this function is performing it will be necessary to link self on current promise 
-    if (busyUpdate !== null) {
-        return new Promise(function (fulfill, reject) {
-            return busyUpdate.then(function () {
-                busyUpdate = null;
-                addToFile(data).then(fulfill).catch(reject);
-            }).catch(reject);
-        });
-    }
+//    if (busyUpdate !== null) {
+//        return new Promise(function (fulfill, reject) {
+//            return busyUpdate.then(function () {
+//                busyUpdate = null;
+//                addToFile(data).then(fulfill).catch(reject);
+//            }).catch(reject);
+//        });
+//    }
 
-    busyUpdate = new Promise(function (fulfill, reject) {
-
+    var promise = new Promise(function (fulfill, reject) {
+        // always new line
         var newNote = '\n';
         var jsonString = JSON.stringify(data);
-        var date = new Date();
 
         newNote += jsonString;
         
         // string has been created than can leave
         fulfill();
-        busyUpdate = null;
+//        busyUpdate = null;
         
         
         // append new line out of of chain
@@ -42,6 +41,7 @@ function addToFile(data) {
         });
 
     });
-    return busyUpdate;
+    
+    return promise;
 }
 exports.addToFile = addToFile;

@@ -42,7 +42,7 @@ http.IncomingMessage.prototype.parsePostData = parsePostData;
 http.createServer(function (request, response) {
     // function colled on error
     var sendError = function (error) {
-        console.error(Date.now(),error);
+        console.error(Date.now(), error);
         response.writeHead(500);
         response.end();
     }
@@ -50,6 +50,7 @@ http.createServer(function (request, response) {
 
     // resolve url /count method get
     if (request.url === '/count' && request.method === 'GET') {
+        // perform action
         controller.get().then(function (count) {
             // send succes and count
             response.writeHead(200, {"Content-Type": "text/plain"});
@@ -61,14 +62,15 @@ http.createServer(function (request, response) {
     else if (request.url === '/track' && request.method === 'POST') {
         // gain object from postdata for next process
         request.parsePostData().then(function (data) {
+            // perform action
             return controller.post(data);
         }).then(function () {
-              // send succes
-              console.log('send success', (request._postDataObject.c || ('count: '+ request._postDataObject.count)));
-              response.writeHead(200, {"Content-Type": "text/plain"});
-              response.end();
-          }).catch(sendError);
-    } 
+            // send succes
+            console.log('send success', (request._postDataObject.c || ('count: ' + request._postDataObject.count)));
+            response.writeHead(200, {"Content-Type": "text/plain"});
+            response.end();
+        }).catch(sendError);
+    }
     // resolve the rest of requests
     else {
         response.writeHead(404, {"Content-Type": "text/plain"});

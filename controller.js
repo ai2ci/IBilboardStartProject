@@ -15,20 +15,20 @@ function get() {
     return promise;
 }
 function post(data) {
-    var promise = new Promise(function (fulfill, fail) {
-        file.addToFile(data).then(function () {
-            // success
-            if (data.count) {
-                // increment cout in db
-                db.incrementCount(data.count)
-                  .then(fulfill)
-                  .catch(fail);
-            } else {
-                fulfill();
-            }
-        }, fail);
+    var promise1 = new Promise(function (fulfill, fail) {
+        file.addToFile(data).then(fulfill, fail);
     });
-    return promise;
+    var promise2 = new Promise(function (fulfill, fail) {
+        if (data.count) {
+            // increment cout in db
+            db.incrementCount(data.count)
+              .then(fulfill)
+              .catch(fail);
+        } else {
+            fulfill();
+        }
+    });
+    return new Promise.all([promise1, promise2]);
 }
 
 exports.get = get

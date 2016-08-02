@@ -42,7 +42,7 @@ http.IncomingMessage.prototype.parsePostData = parsePostData;
 http.createServer(function (request, response) {
     // function colled on error
     var sendError = function (error) {
-        console.log(error, 'err');
+        console.error(error);
         response.writeHead(500);
         response.end('' + error);
     }

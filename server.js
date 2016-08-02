@@ -9,7 +9,7 @@ var querystring = require('querystring');
 var controller = require('./controller.js');
 
 
-// copied from http://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
+// inspired by http://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
 function parsePostData() {
     var instance = this;
     var promise = new Promise(function (fulfill, reject) {

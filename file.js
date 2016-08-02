@@ -3,8 +3,9 @@ var fs = require("fs");
 var Promise = require('promise');
 var path = "data/post.log";
 /**
- * add json file
+ * add object like json to file
  * @param Object data
+ * @returns Promise
  */
 function addToFile(data) {
     var promise = new Promise(function (fulfill, reject) {

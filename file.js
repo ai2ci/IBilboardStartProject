@@ -2,35 +2,45 @@
 var fs = require("fs");
 var Promise = require('promise');
 var path = "data/post.log";
+var busyUpdate = null;
 /**
  * add json file
  * @param JSON data
  * @param function callback
  */
 function addToFile(data) {
-    
-    var promise = new Promise(function (fulfill, reject) {
+    // if this function is performing it will be necessary to link self on current promise 
+    if (busyUpdate !== null) {
+        return new Promise(function (fulfill, reject) {
+            return busyUpdate.then(function () {
+                busyUpdate = null;
+                addToFile(data).then(fulfill).catch(reject);
+            }).catch(reject);
+        });
+    }
 
-        var newNote = '';
-        var exists = fs.existsSync(path);
+    busyUpdate = new Promise(function (fulfill, reject) {
+
+        var newNote = '\n';
         var jsonString = JSON.stringify(data);
         var date = new Date();
 
-        if (exists) {
-            newNote = '\n';
-        }
-        newNote += date.getTime() + ': ' + jsonString;
+        newNote += jsonString;
 
         // append new line
+        fulfill();
+        busyUpdate = null;
+        
+        
         fs.appendFile(path, newNote, function (err) {
             if (err) {
                 return reject(err);
             }
             console.log(data)
-            return fulfill();
+//            return fulfill();
         });
 
     });
-    return promise;
+    return busyUpdate;
 }
 exports.addToFile = addToFile;

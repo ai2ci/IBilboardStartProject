@@ -10,7 +10,6 @@ var client = null;
 /**
  * increment count
  * @param number data
- * @param Promise
  */
 function incrementCount(data) {
     // if this function is performing it will be necessary to link self on current promise

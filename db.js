@@ -12,7 +12,7 @@ var busyUpdate = null;
  * @param Promise
  */
 function incrementCount(data) {
-    // if this function is processing it's necessary to chain self on current promise
+    // if this function is performing it will necessary to chain self on current promise
     if (busyUpdate !== null) {
         return new Promise(function (fulfill, reject) {
             return busyUpdate.then(function () {
@@ -47,16 +47,7 @@ function incrementCount(data) {
  * @returns Promise
  */
 function getCount() {
-    // if this function is processing it's necessary to chain self on current promise
-    if (busyUpdate !== null) {
-        return new Promise(function (fulfill, reject) {
-            return busyUpdate.then(function () {
-                getCount().then(fulfill).catch(reject);
-            }).catch(reject);
-        });
-    }
-
-    busyUpdate = new Promise(function (fulfill, reject) {
+    var promise = new Promise(function (fulfill, reject) {
 
         var client = redis.createClient();
         client.on('connect', function () {
@@ -72,7 +63,7 @@ function getCount() {
             busyUpdate = null;
         });
     });
-    return busyUpdate;
+    return promise;
 
 }
 

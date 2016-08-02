@@ -10,6 +10,7 @@ var client = null;
 /**
  * increment count
  * @param number data
+ * @returns Promise
  */
 function incrementCount(data) {
     // if this function is performing it will be necessary to link self on current promise
@@ -50,7 +51,7 @@ function incrementCount(data) {
     return busyUpdate;
 }
 /**
- * 
+ * find out current count
  * @returns Promise
  */
 function getCount() {
